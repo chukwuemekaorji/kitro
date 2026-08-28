@@ -1,0 +1,17 @@
+# working instructions, not part of the deliverable
+CLAUDE_1.md
+BUILD_SPEC.md
+
+# env
+.env
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# editor / os
+.DS_Store
+.vscode/
+.idea/
