@@ -24,3 +24,14 @@ def delete_product(product_id: int, db: Session = Depends(get_db)) -> None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="product not found")
     db.delete(product)
     db.commit()
+
+
+@router.patch("/{product_id}/favourite", response_model=ProductOut)
+def toggle_favourite(product_id: int, db: Session = Depends(get_db)) -> Product:
+    product = db.get(Product, product_id)
+    if product is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="product not found")
+    product.is_favourite = not product.is_favourite
+    db.commit()
+    db.refresh(product)
+    return product
