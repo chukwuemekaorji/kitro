@@ -1,5 +1,8 @@
 FROM python:3.12-slim
 
+# unbuffer stdout/stderr so print() and logs show up immediately in `docker compose logs`
+ENV PYTHONUNBUFFERED=1
+
 WORKDIR /app
 
 COPY requirements.txt .
