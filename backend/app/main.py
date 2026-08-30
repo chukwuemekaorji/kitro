@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app import models  # noqa: F401 - import registers Product on Base.metadata before create_all
 from app.database import Base, engine
-from app.routers import products
+from app.routers import overview, products
 from app.seed import seed_products
 
 FRONTEND_ORIGIN = "http://localhost:5173"
@@ -28,6 +28,7 @@ app.add_middleware(
 )
 
 app.include_router(products.router)
+app.include_router(overview.router)
 
 
 @app.get("/health")

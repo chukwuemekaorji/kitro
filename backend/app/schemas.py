@@ -14,3 +14,8 @@ class ProductOut(BaseModel):
     stock_quantity: int
     total_sold: int
     is_favourite: bool
+
+
+class OverviewStats(BaseModel):
+    total_sold: int
+    total_available: int
