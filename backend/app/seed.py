@@ -3,10 +3,14 @@ from decimal import Decimal
 
 from faker import Faker
 
+from app.auth import hash_password
 from app.database import Base, SessionLocal, engine
-from app.models import Product
+from app.models import Product, User
 
 PRODUCT_COUNT = 20
+
+DEMO_EMAIL = "demo@kitro.dev"
+DEMO_PASSWORD = "KitroDemo123!"
 
 # adjective/noun word banks per category, so seeded names actually read like
 # products in that category instead of generic stuff
@@ -87,7 +91,26 @@ def seed_products() -> None:
         db.close()
 
 
+def seed_user() -> None:
+    db = SessionLocal()
+    try:
+        if db.query(User).count() > 0:
+            print("users table already has data, skipping seed")
+            return
+
+        db.add(User(email=DEMO_EMAIL, password_hash=hash_password(DEMO_PASSWORD)))
+        db.commit()
+        print(f"seeded demo user: {DEMO_EMAIL} / {DEMO_PASSWORD}")
+    finally:
+        db.close()
+
+
+def seed_all() -> None:
+    seed_products()
+    seed_user()
+
+
 if __name__ == "__main__":
     # lets this run standalone too: docker-compose exec backend python -m app.seed
     Base.metadata.create_all(bind=engine)
-    seed_products()
+    seed_all()

@@ -17,3 +17,11 @@ class Product(Base):
     stock_quantity: Mapped[int] = mapped_column(default=0)
     total_sold: Mapped[int] = mapped_column(default=0)
     is_favourite: Mapped[bool] = mapped_column(default=False)
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
+    password_hash: Mapped[str] = mapped_column(String(255))

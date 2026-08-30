@@ -19,3 +19,13 @@ class ProductOut(BaseModel):
 class OverviewStats(BaseModel):
     total_sold: int
     total_available: int
+
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"

@@ -2,11 +2,12 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from app.auth import get_current_user
 from app.database import get_db
 from app.models import Product
 from app.schemas import OverviewStats
 
-router = APIRouter(prefix="/overview", tags=["overview"])
+router = APIRouter(prefix="/overview", tags=["overview"], dependencies=[Depends(get_current_user)])
 
 
 @router.get("/stats", response_model=OverviewStats)
