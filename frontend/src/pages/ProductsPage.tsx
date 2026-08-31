@@ -1,4 +1,6 @@
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import StarIcon from "@mui/icons-material/Star";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
 import {
   Alert,
   Box,
@@ -26,10 +28,11 @@ export function ProductsPage() {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [products, setProducts] = useState<Product[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   const [productPendingDelete, setProductPendingDelete] = useState<Product | null>(null);
   const [deleting, setDeleting] = useState(false);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [togglingId, setTogglingId] = useState<number | null>(null);
 
   // debounce so we're not firing a request on every keystroke
   useEffect(() => {
@@ -56,15 +59,28 @@ export function ProductsPage() {
   async function handleConfirmDelete() {
     if (!productPendingDelete) return;
     setDeleting(true);
-    setDeleteError(null);
+    setActionError(null);
     try {
       await api.delete(`/products/${productPendingDelete.id}`);
       setProducts((prev) => prev?.filter((p) => p.id !== productPendingDelete.id) ?? prev);
       setProductPendingDelete(null);
     } catch {
-      setDeleteError("Could not delete product.");
+      setActionError("Could not delete product.");
     } finally {
       setDeleting(false);
+    }
+  }
+
+  async function handleToggleFavourite(product: Product) {
+    setTogglingId(product.id);
+    setActionError(null);
+    try {
+      const updated = await api.patch<Product>(`/products/${product.id}/favourite`);
+      setProducts((prev) => prev?.map((p) => (p.id === updated.id ? updated : p)) ?? prev);
+    } catch {
+      setActionError("Could not update favourite.");
+    } finally {
+      setTogglingId(null);
     }
   }
 
@@ -83,7 +99,7 @@ export function ProductsPage() {
       />
 
       {error && <Alert severity="error">{error}</Alert>}
-      {deleteError && <Alert severity="error">{deleteError}</Alert>}
+      {actionError && <Alert severity="error">{actionError}</Alert>}
       {!error && !products && <CircularProgress />}
 
       {products && (
@@ -106,6 +122,22 @@ export function ProductsPage() {
                   <TableCell align="right">{product.total_sold}</TableCell>
                   <TableCell align="right">€{product.price}</TableCell>
                   <TableCell align="right">
+                    <IconButton
+                      aria-label={
+                        product.is_favourite
+                          ? `Remove ${product.name} from favourites`
+                          : `Add ${product.name} to favourites`
+                      }
+                      size="small"
+                      disabled={togglingId === product.id}
+                      onClick={() => handleToggleFavourite(product)}
+                    >
+                      {product.is_favourite ? (
+                        <StarIcon fontSize="small" sx={{ color: "primary.main" }} />
+                      ) : (
+                        <StarBorderIcon fontSize="small" />
+                      )}
+                    </IconButton>
                     <IconButton
                       aria-label={`Delete ${product.name}`}
                       size="small"
