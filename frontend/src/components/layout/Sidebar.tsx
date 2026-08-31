@@ -1,5 +1,6 @@
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import {
   Box,
   Drawer,
@@ -11,7 +12,8 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../auth/AuthContext";
 
 export const SIDEBAR_WIDTH = 240;
 
@@ -22,6 +24,13 @@ const NAV_ITEMS = [
 
 export function Sidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  function handleSignOut() {
+    logout();
+    navigate("/sign-in", { replace: true });
+  }
 
   return (
     <Drawer
@@ -35,6 +44,8 @@ export function Sidebar() {
           bgcolor: "background.paper",
           borderRight: "1px solid",
           borderColor: "divider",
+          display: "flex",
+          flexDirection: "column",
         },
       }}
     >
@@ -43,7 +54,7 @@ export function Sidebar() {
           Kitro
         </Typography>
       </Toolbar>
-      <Box sx={{ px: 1 }}>
+      <Box sx={{ px: 1, flexGrow: 1 }}>
         <List>
           {NAV_ITEMS.map((item) => (
             <ListItem key={item.path} disablePadding sx={{ mb: 0.5 }}>
@@ -57,6 +68,18 @@ export function Sidebar() {
               </ListItemButton>
             </ListItem>
           ))}
+        </List>
+      </Box>
+      <Box sx={{ px: 1, py: 1, borderTop: "1px solid", borderColor: "divider" }}>
+        <List>
+          <ListItem disablePadding>
+            <ListItemButton onClick={handleSignOut}>
+              <ListItemIcon>
+                <LogoutOutlinedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Sign out" />
+            </ListItemButton>
+          </ListItem>
         </List>
       </Box>
     </Drawer>
