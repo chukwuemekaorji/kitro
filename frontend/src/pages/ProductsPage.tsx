@@ -1,7 +1,9 @@
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import {
   Alert,
   Box,
   CircularProgress,
+  IconButton,
   Paper,
   Table,
   TableBody,
@@ -14,6 +16,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { api } from "../api/client";
+import { ConfirmDialog } from "../components/ConfirmDialog";
 import type { Product } from "../types";
 
 const SEARCH_DEBOUNCE_MS = 300;
@@ -23,6 +26,10 @@ export function ProductsPage() {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [products, setProducts] = useState<Product[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const [productPendingDelete, setProductPendingDelete] = useState<Product | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   // debounce so we're not firing a request on every keystroke
   useEffect(() => {
@@ -46,6 +53,21 @@ export function ProductsPage() {
     };
   }, [debouncedSearch]);
 
+  async function handleConfirmDelete() {
+    if (!productPendingDelete) return;
+    setDeleting(true);
+    setDeleteError(null);
+    try {
+      await api.delete(`/products/${productPendingDelete.id}`);
+      setProducts((prev) => prev?.filter((p) => p.id !== productPendingDelete.id) ?? prev);
+      setProductPendingDelete(null);
+    } catch {
+      setDeleteError("Could not delete product.");
+    } finally {
+      setDeleting(false);
+    }
+  }
+
   return (
     <Box>
       <Typography variant="h4" sx={{ mb: 3 }}>
@@ -61,6 +83,7 @@ export function ProductsPage() {
       />
 
       {error && <Alert severity="error">{error}</Alert>}
+      {deleteError && <Alert severity="error">{deleteError}</Alert>}
       {!error && !products && <CircularProgress />}
 
       {products && (
@@ -72,6 +95,7 @@ export function ProductsPage() {
                 <TableCell align="right">Stock Quantity</TableCell>
                 <TableCell align="right">Total Sold</TableCell>
                 <TableCell align="right">Price</TableCell>
+                <TableCell align="right">Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -81,11 +105,20 @@ export function ProductsPage() {
                   <TableCell align="right">{product.stock_quantity}</TableCell>
                   <TableCell align="right">{product.total_sold}</TableCell>
                   <TableCell align="right">€{product.price}</TableCell>
+                  <TableCell align="right">
+                    <IconButton
+                      aria-label={`Delete ${product.name}`}
+                      size="small"
+                      onClick={() => setProductPendingDelete(product)}
+                    >
+                      <DeleteOutlinedIcon fontSize="small" />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
               ))}
               {products.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={4} align="center">
+                  <TableCell colSpan={5} align="center">
                     No products found.
                   </TableCell>
                 </TableRow>
@@ -94,6 +127,20 @@ export function ProductsPage() {
           </Table>
         </TableContainer>
       )}
+
+      <ConfirmDialog
+        open={productPendingDelete !== null}
+        title="Delete product"
+        description={
+          productPendingDelete
+            ? `Are you sure you want to delete "${productPendingDelete.name}"? This cannot be undone.`
+            : ""
+        }
+        confirmLabel="Delete"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setProductPendingDelete(null)}
+        loading={deleting}
+      />
     </Box>
   );
 }
