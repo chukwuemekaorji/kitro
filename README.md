@@ -2,7 +2,7 @@
 
 A scoped slice of Kitro's product management web app: sign in, view key stats on an
 Overview dashboard, and search/manage products on a Products page. Built for the
-software engineer take-home assignment.
+software engineer intern take-home assignment.
 
 ## Features Implemented
 
@@ -24,19 +24,6 @@ software engineer take-home assignment.
 
 - ✅ Sign-out button
 
-## Not built
-
-Not implemented, and deliberately so — not stubbed, not forgotten:
-
-- ❌ Pie / line charts
-- ❌ Role-based authorization (sign-in checks that a session is valid, not what it can see)
-- ❌ Language toggle (EN / DE)
-- ❌ Editing a product's fields
-- ❌ Pagination / sorting
-- ❌ Gains after taxes / avg gain per product
-- ❌ Restock reminder modal
-- ❌ Top 5 sold products + stock status labels
-- ❌ Product summary section
 
 ## Tech Stack
 
