@@ -11,7 +11,7 @@ from app.database import get_db
 from app.models import User
 
 JWT_ALGORITHM = "HS256"
-JWT_EXPIRES_MINUTES = 60 * 24  # 24h - fine for a laptop demo, no refresh-token rotation in scope
+JWT_EXPIRES_MINUTES = 60 * 24  # 24h - fine for a laptop demo, no refresh-token rotation in this project, but would be a good idea in a real app
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 # auto_error=False so a missing header falls through to our own check below instead of

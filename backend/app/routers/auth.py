@@ -17,7 +17,7 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)) -> TokenResponse
 
     user = db.query(User).filter(User.email == payload.email).first()
     if user is None or not verify_password(payload.password, user.password_hash):
-        # deliberately the same error either way - don't reveal which field was wrong
+        # deliberately the same error either way, don't reveal which field was wrong
         raise invalid_credentials
 
     token = create_access_token(subject=user.email)

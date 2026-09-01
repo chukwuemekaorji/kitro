@@ -1,6 +1,6 @@
 import { createTheme } from "@mui/material/styles";
 
-// Kitro brand palette (BUILD_SPEC.md §6)
+// Kitro brand palette
 const SWISS_RED = "#E93A37";
 const SWISS_RED_LIGHT = "#ED615F";
 const LINEN_50 = "#FBF9F4";
