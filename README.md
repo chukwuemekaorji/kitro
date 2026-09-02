@@ -84,15 +84,16 @@ kitro/
 │   ├── src/
 │   │   ├── pages/            # SignInPage, OverviewPage, ProductsPage
 │   │   ├── components/       # ConfirmDialog, layout/ (AppShell, Sidebar)
-│   │   ├── auth/             # AuthContext, RequireAuth (route guard)
-│   │   ├── api/              # client.ts (fetch wrapper, attaches JWT)
-│   │   ├── theme.ts           # Kitro brand palette (MUI theme)
-│   │   └── types.ts           # shared Product type
+│   │   ├── auth/              # AuthContext, RequireAuth (route guard)
+│   │   ├── api/                # client.ts (fetch wrapper, attaches JWT)
+│   │   ├── theme.ts            # Kitro brand palette (MUI theme)
+│   │   └── types.ts            # shared Product type
 │   ├── Dockerfile
 │   └── package.json
 ├── docker-compose.yml
 ├── .env.example
 └── README.md
+
 
 Feature Details
 
